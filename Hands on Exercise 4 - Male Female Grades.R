@@ -76,3 +76,16 @@ male_mean_grade = male_mean_grade + d3$G3.x[i] + d3$G3.y[i]
   Gender_G3
   
   ## Q1 ends here ##
+  ## Q2 begins here ##
+
+d3$absences = d3$absences.x+d3$absences.y
+    
+d3$quartile <- with(d3, cut(absences, 
+                 breaks=quantile(absences, probs=seq(0,1, by=0.25), na.rm=TRUE), 
+                 include.lowest=TRUE))
+quantile_data = quantile(d3$absences, seq(from = 0, to = 1, by = 0.2))
+
+
+tapply(d3$absences, findInterval(d3$absences, quantile_data), mean)
+
+## Q2 ends here
