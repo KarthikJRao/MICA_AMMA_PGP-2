@@ -34,36 +34,35 @@ plot(Top.Five.df$Year, Top.Five.df$Runs)
 
 ## Number of times a player had become highest run getter in a calendar year
 
-Year_store <- unique(cricket_table.df$Year)
-countOfYears <- rep(0,length(Year_store))
-countOfRuns <- NULL
-Name_array <- NULL
-
 cricket_table_yearsort.df<- cricket_table.df[with(cricket_table.df, order(Year, Player)), ]
 View(cricket_table_yearsort.df)
 
-for (i3 in 1:length(Year_store))
+yearsOcc <- as.data.frame(table(cricket_table.df$Year))
+yearsOcc$MaxRuns <- rep(0,nrow(yearsOcc))
+yearsOcc$MaxRunsPlayer <- rep("",nrow(yearsOcc))
+for(i3 in 1:nrow(yearsOcc))
 {
-  if (!(is.na(Year_store[i3])))
-  {
-    for (i4 in 1:nrow(cricket_table_yearsort.df))
-    {
-      if (!(is.na(cricket_table_yearsort.df$Runs[i4])))
-      {
-        if (cricket_table_yearsort.df$Year[i4]==Year_store[i3])
-        {
-          countOfRuns[i3] <- cricket_table_yearsort.df$Runs[i4]
-          Name_array[i3] <- cricket_table_yearsort.df$Player[i4]
-        }  
-        
-      }  
-      
-    }
-  }  
+  
+  maxRunsSubset <- subset(cricket_table.df,cricket_table.df$Year==yearsOcc$Var1[i3])
+  yearsOcc$MaxRuns[i3] <- max(maxRunsSubset$Runs)
 }
 
-countOfRuns
-Name_array
+for (i4 in 1:nrow(yearsOcc))
+{
+  for (i5 in 1:nrow(cricket_table.df))
+  {
+    if(cricket_table.df$Year[i5]==yearsOcc$Var1[i4] && cricket_table.df$Runs[i5]==yearsOcc$MaxRuns[i4])
+      yearsOcc$MaxRunsPlayer[i4] <- cricket_table.df$Player[i5]
+  }  
+  
+}
+
+playerMaxRunsTable <- as.data.frame(table(yearsOcc$MaxRunsPlayer))
+max(playerMaxRunsTable$Freq)
+
+print(playerMaxRunsTable)
+print("Maximum number of times a player has got the highest number of runs in a year")
+print(max(playerMaxRunsTable$Freq))
 
 ## End of Number of times a player had become highest run getter in a calendar year
 
@@ -130,13 +129,17 @@ SA
 
 Total_country_appearances = PAK + AUS + IND + WI + ENG + SA + SL
 
-PAK_ratio = 100*PAK/Total_country_appearances
-AUS_ratio = 100*AUS/Total_country_appearances
-IND_ratio = 100*IND/Total_country_appearances
-SL_ratio = 100*SL/Total_country_appearances
-WI_ratio = 100*WI/Total_country_appearances
-ENG_ratio = 100*ENG/Total_country_appearances
-SA_ratio = 100*SA/Total_country_appearances
+PAK_ratio = round(100*PAK/Total_country_appearances,2)
+AUS_ratio = round(100*AUS/Total_country_appearances,2)
+IND_ratio = round(100*IND/Total_country_appearances,2)
+SL_ratio = round(100*SL/Total_country_appearances,2)
+WI_ratio = round(100*WI/Total_country_appearances,2)
+ENG_ratio = round(100*ENG/Total_country_appearances,2)
+SA_ratio = round(100*SA/Total_country_appearances,2)
 
+Country_Percent.df <- NULL
+Country_Percent.df$Country <- as.factor(c("PAK","AUS","IND","SL","WI","ENG","SA"))
+Country_Percent.df$Percentage <- c(PAK_ratio,AUS_ratio,IND_ratio,SL_ratio,WI_ratio,ENG_ratio,SA_ratio)
 
+plot(Country_Percent.df$Country,Country_Percent.df$Percentage)
 ## End of Contribution ofplayer country in becoming highest run getters
